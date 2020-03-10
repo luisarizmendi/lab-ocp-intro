@@ -1,0 +1,40 @@
+{
+    "icon": "fa-openshift",
+    "title": "Deploying Applications From Images",
+    "description": "",
+    "pathwayTitle": "OpenShift",
+    "difficulty": "beginner",
+    "time": "10-15 minutes",
+    "backend": {
+        "imageid": "openshift-4-2"
+    },
+    "environment": {
+        "showdashboard": true,
+        "dashboards": [{"name": "Console", "href": "https://console-openshift-console-[[HOST_SUBDOMAIN]]-443-[[KATACODA_HOST]].environments.katacoda.com"}],
+        "uilayout": "terminal-iframe"
+    },
+    "details": {
+        "steps": [{
+            "title": "Topic 1 - Creating an Initial Project",
+            "text": "01-creating-an-initial-project.md"
+        }, {
+            "title": "Topic 2 - Deploying Using the Web Console",
+            "text": "02-deploying-using-the-web-console.md"
+        }, {
+            "title": "Topic 3 - Exploring the Topology View",
+            "text": "03-exploring-the-topology-view.md"
+        }, {
+            "title": "Topic 4 - Deleting the Application",
+            "text": "04-deleting-the-application.md"
+        }, {
+            "title": "Topic 5 - Deploying Using the Command Line",
+            "text": "05-deploying-using-the-command-line.md"
+        }],
+        "intro": {
+            "text": "intro.md"
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "icon": "fa-openshift",
+    "title": "Connecting to a Database Using Port Forwarding",
+    "description": "",
+    "pathwayTitle": "OpenShift",
+    "difficulty": "beginner",
+    "time": "10-15 minutes",
+    "backend": {
+        "imageid": "openshift-4-2"
+    },
+    "environment": {
+        "showdashboard": true,
+        "dashboards": [{"name": "Console", "href": "https://console-openshift-console-[[HOST_SUBDOMAIN]]-443-[[KATACODA_HOST]].environments.katacoda.com"}],
+        "uilayout": "terminal-iframe"
+    },
+    "details": {
+        "steps": [{
+            "title": "Topic 1 - Creating an Initial Project",
+            "text": "01-creating-an-initial-project.md"
+        }, {
+            "title": "Topic 2 - Deploying a PostgreSQL Database",
+            "text": "02-deploying-a-postgresql-database.md"
+        }, {
+            "title": "Topic 3 - Starting an Interactive Shell",
+            "text": "03-starting-an-interactive-shell.md"
+        }, {
+            "title": "Topic 4 - Creating a Remote Connection",
+            "text": "04-creating-a-remote-connection.md"
+        }],
+        "intro": {
+            "courseData": "env-init.sh",
+            "text": "intro.md"
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    }
+}
