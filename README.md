@@ -20,6 +20,8 @@ Deploying the workshop
 
 Just clone (with submodules) and run:
 
-git clone --single-branch --branch master --recurse-submodules https://github.com/luisarizmendi/lab-ocp-intro.git
-cd lab-ocp-intro
-./launch-workshop.sh
+`git clone --single-branch --branch master --recurse-submodules https://github.com/luisarizmendi/lab-ocp-intro.git`
+
+`cd lab-ocp-intro`
+
+`./launch-workshop.sh`
