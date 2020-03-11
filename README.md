@@ -18,6 +18,8 @@ If you want to run the single add the --singleuser in the command, like this: la
 Deploying the workshop
 =====================
 
-Just run:
+Just clone (with submodules) and run:
 
+git clone --single-branch --branch master --recurse-submodules https://github.com/luisarizmendi/lab-ocp-intro.git
+cd lab-ocp-intro
 ./launch-workshop.sh

@@ -4,56 +4,16 @@ modules:
     activate:
     - workshop-overview
     - setup-environment
-    - introduction/getting-started/intro
-    - introduction/getting-started/1explore-console
-    - introduction/getting-started/2explore-cli
-    - introduction/getting-started/3deploy-docker
-    - introduction/getting-started/4scaling
-    - introduction/getting-started/5routes
-    - introduction/getting-started/6s2i
-    - introduction/getting-started/finish
-    - introduction/developing-with-odo/intro
-    - introduction/developing-with-odo/00-application-overview
-    - introduction/developing-with-odo/02-creating-new-binary-component
-    - introduction/developing-with-odo/03-deploying-component-from-source-code
-    - introduction/developing-with-odo/04-linking-components
-    - introduction/developing-with-odo/05-exposing-components-to-public
-    - introduction/developing-with-odo/06-making-changes-to-source-code
-    - introduction/developing-with-odo/finish
-    - introduction/deploying-images/intro
-    - introduction/deploying-images/02-deploying-using-the-web-console
-    - introduction/deploying-images/03-exploring-the-topology-view
-    - introduction/deploying-images/04-deleting-the-application
-    - introduction/deploying-images/05-deploying-using-the-command-line
-    - introduction/deploying-images/finish
-    - introduction/deploying-python/intro
-    - introduction/deploying-python/02-deploying-using-the-web-console
-    - introduction/deploying-python/03-viewing-the-builder-logs
-    - introduction/deploying-python/04-accessing-the-application
-    - introduction/deploying-python/05-deleting-the-application
-    - introduction/deploying-python/06-deploying-using-the-command-line
-    - introduction/deploying-python/07-triggering-a-new-build
-    - introduction/deploying-python/finish
-    - introduction/resource-objects/01-deploying-an-application
-    - introduction/resource-objects/02-resource-object-types
-    - introduction/resource-objects/03-querying-resource-objects
-    - introduction/resource-objects/04-editing-resource-objects
-    - introduction/resource-objects/05-creating-resource-objects
-    - introduction/resource-objects/06-replacing-resource-objects
-    - introduction/resource-objects/07-labelling-resource-objects
-    - introduction/resource-objects/08-deleting-resource-objects
-    - introduction/resource-objects/finish
-    - introduction/port-forwarding/01-creating-an-initial-project
-    - introduction/port-forwarding/02-deploying-a-postgresql-database
-    - introduction/port-forwarding/03-starting-an-interactive-shell
-    - introduction/port-forwarding/04-creating-a-remote-connection
-    - introduction/port-forwarding/finish
-    - introduction/transferring-files/01-creating-an-initial-project
-    - introduction/transferring-files/02-downloading-files-from-a-container
-    - introduction/transferring-files/03-uploading-files-to-a-container
-    - introduction/transferring-files/04-synchronizing-files-with-a-container
-    - introduction/transferring-files/05-copying-files-to-a-persistent-volume
-    - introduction/transferring-files/finish
+    - modules/intro
+    - modules/1explore-console
+    - modules/2explore-cli
+    - modules/3deploy-docker
+    - modules/4scaling
+    - modules/5s2i
+    - modules/6transfer-files
+    - modules/7templates
+    - modules/8port-forwarding
+    - modules/9odo
     - workshop-summary
 
 

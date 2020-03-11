@@ -8,124 +8,28 @@ modules:
     setup-environment:
         name: Setup Environment
         exit_sign: Start Workshop
-    introduction/getting-started/intro:
-        name: Intro - Getting Started
-        exit_sign: Start this Section
-    introduction/getting-started/1explore-console:
-        name: Intro - Explore Console
-    introduction/getting-started/2explore-cli:
-        name: Intro - Explore CLI
-    introduction/getting-started/3deploy-docker:
-        name: Intro - Deploying an image with Docker
-    introduction/getting-started/4scaling:
-        name: Intro - Scaling the application
-    introduction/getting-started/5routes:
-        name: Intro - OpenShift Routes
-    introduction/getting-started/6s2i:
-        name: Intro - Source-to-image deployments   
-    introduction/getting-started/finish:
-        name: Intro - Finish Section 
-        exit_sign: Finish this Section
-    introduction/developing-with-odo/intro:
-        name: ODO - Getting Started
-        exit_sign: Start this Section
-    introduction/developing-with-odo/00-application-overview:
-        name: ODO - Application Overview
-    introduction/developing-with-odo/01-creating-initial-project:
-        name: ODO - Creating the initial project
-    introduction/developing-with-odo/02-creating-new-binary-component:
-        name: ODO - Creating new binary component
-    introduction/developing-with-odo/03-deploying-component-from-source-code:
-        name: ODO - Deploying from source code
-    introduction/developing-with-odo/04-linking-components:
-        name: ODO - Linking components
-    introduction/developing-with-odo/05-exposing-components-to-public:
-        name: ODO - Exposing components to public
-    introduction/developing-with-odo/06-making-changes-to-source-code:
-        name: ODO - Making changes to source code
-    introduction/developing-with-odo/finish:
-        name: ODO - Finish Section
-        exit_sign: Finish this Section
-    introduction/deploying-images/intro:
-        name: Deploy Image - Getting Started
-        exit_sign: Start this Section
-    introduction/deploying-images/01-creating-an-initial-project:
-        name: Deploy Image - Creating an initial project
-    introduction/deploying-images/02-deploying-using-the-web-console:
-        name: Deploy Image - Deploying using the Web Console
-    introduction/deploying-images/03-exploring-the-topology-view:
-        name: Deploy Image - Exploring the topology view
-    introduction/deploying-images/04-deleting-the-application:
-        name: Deploy Image - Deleting the application
-    introduction/deploying-images/05-deploying-using-the-command-line:
-        name: Deploy Image - Deploying using the CLI
-    introduction/deploying-images/finish:
-        name: Deploy Image - Finish Section
-        exit_sign: Finish this Section
-    introduction/deploying-python/intro:
-        name: Deploy Source - Getting Started
-        exit_sign: Start this Section
-    introduction/deploying-python/02-deploying-using-the-web-console:
-        name: Deploy Source - Deploying using the Web Console
-    introduction/deploying-python/03-viewing-the-builder-logs:
-        name: Deploy Source - Viewing the builder logs
-    introduction/deploying-python/04-accessing-the-application:
-        name: Deploy Source - Accessing the application
-    introduction/deploying-python/05-deleting-the-application:
-        name: Deploy Source - Deleting the application
-    introduction/deploying-python/06-deploying-using-the-command-line:
-        name: Deploy Source - Deploying using the CLI
-    introduction/deploying-python/07-triggering-a-new-build:
-        name: Deploy Source - Triggering a new build
-    introduction/deploying-python/finish:
-        name: Deploy Source - Finish Section
-        exit_sign: Finish this Section
-    introduction/resource-objects/01-deploying-an-application:
-        name: Resource Objects - Getting Started
-        exit_sign: Start this Section
-    introduction/resource-objects/02-resource-object-types:
-        name: Resource Objects - Object types
-    introduction/resource-objects/03-querying-resource-objects:
-        name: Resource Objects - Querying Resource Objects
-    introduction/resource-objects/04-editing-resource-objects:
-        name: Resource Objects - Editing resource objects
-    introduction/resource-objects/05-creating-resource-objects:
-        name: Resource Objects - Creating Resource Objects
-    introduction/resource-objects/06-replacing-resource-objects:
-        name: Resource Objects - Replacing Resource Objects
-    introduction/resource-objects/07-labelling-resource-objects:
-        name: Resource Objects - Labelling Resource Objects
-    introduction/resource-objects/08-deleting-resource-objects:
-        name: Resource Objects - Deleting Resource Objects
-    introduction/resource-objects/finish:
-        name: Resource Objects - Finish Section
-        exit_sign: Finish this Section
-    introduction/port-forwarding/01-creating-an-initial-project:
-        name: Port Forwarding - Getting Started
-        exit_sign: Start this Section
-    introduction/port-forwarding/02-deploying-a-postgresql-database:
-        name: Port Forwarding - Deploying PostgreSQL
-    introduction/port-forwarding/03-starting-an-interactive-shell:
-        name: Port Forwarding - Starting interactive Shell
-    introduction/port-forwarding/04-creating-a-remote-connection:
-        name: Port Forwarding - Creating remote connection
-    introduction/port-forwarding/finish:
-        name: Port Forwarding - Finish Section
-        exit_sign: Finish this Section
-    introduction/transferring-files/01-creating-an-initial-project:
-        name: Transferring Files - Getting Started
-        exit_sign: Start this Section
-    introduction/transferring-files/02-downloading-files-from-a-container:
-        name: Transferring Files - Downloading Files from container
-    introduction/transferring-files/03-uploading-files-to-a-container:
-        name: Transferring Files - Uploading Files to container
-    introduction/transferring-files/04-synchronizing-files-with-a-container:
-        name: Transferring Files - Synchonizing Files with container
-    introduction/transferring-files/05-copying-files-to-a-persistent-volume:
-        name: Transferring Files - Copying Files to PV
-    introduction/transferring-files/finish:
-        name: Transferring Files - Finish Section
-        exit_sign: Finish this Section
+    modules/intro:
+        name: Getting Started
+        exit_sign: Start
+    modules/1explore-console:
+        name: Explore the Web Console
+    modules/2explore-cli:
+        name: Explore the CLI
+    modules/3deploy-docker:
+        name: Deploying an image
+    modules/4scaling:
+        name: Scaling the application
+    modules/5s2i:
+        name: Source-to-image deployments   
+    modules/6transfer-files:
+        name: Transfering files  
+    modules/7templates:
+        name: Using Templates  
+    modules/8port-forwarding:
+        name: Port Forwarding   
+    modules/9odo:
+        name: Deploying APPs with ODO   
+        exit_sign: Go to Summary
     workshop-summary:
         name: Workshop Summary
         exit_sign: Finish Workshop
