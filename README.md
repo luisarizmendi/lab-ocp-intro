@@ -32,9 +32,9 @@ This tutorial will act as step-by-step guide in helping you to understand Opensh
 Deploying the workshop
 =====================
 
-You need to run this workshop in a working OpenShift Cluster. In order to install it clone (with submodules) and run the following commands:
-
 *NOTE*: You have to be log in to the OpenShift cluster from where you launch the installer, probably as clusteradmin if you want to run the workshop as multiuser 
+
+You need to run this workshop in a working OpenShift Cluster. In order to install it, run the following commands:
 
 
 `git clone --single-branch --branch master --recurse-submodules https://github.com/luisarizmendi/lab-ocp-intro.git`
