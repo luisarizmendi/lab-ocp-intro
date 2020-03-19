@@ -1,0 +1,41 @@
+## Deploy on DEV
+
+oc delete project wine-dev
+oc delete project wine-test
+
+oc new-project wine-dev
+
+oc new-app -n wine-dev \
+  redhat-openjdk18-openshift:1.4~https://github.com/cvicens/wine \
+  --context-dir=pairing --name pairing
+
+watch oc get pod -n wine-dev
+
+oc expose svc/pairing -n wine-dev 
+
+oc get route pairing -n wine-dev
+
+## Deploy on TEST
+
+oc new-project wine-test
+
+oc policy add-role-to-user system:image-puller \
+  system:serviceaccount:wine-test:default -n wine-dev
+
+## Check our image is there with tag ‘latest’
+oc get is pairing -n wine-dev
+
+oc new-app -n wine-test --allow-missing-imagestream-tags=true \
+  wine-dev/pairing:test \
+  --name pairing
+
+oc expose dc/pairing --port=8080 -n wine-test
+
+oc expose svc/pairing -n wine-test
+
+oc tag wine-dev/pairing:latest wine-dev/pairing:test
+
+watch oc get pod -n wine-test
+
+oc get route pairing -n wine-test
+

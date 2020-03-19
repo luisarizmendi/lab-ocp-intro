@@ -1,0 +1,45 @@
+---
+apiVersion: 1.0.0
+metadata:
+  generateName: fruit-service-
+projects:
+  - name: fruit-service
+    source:
+      location: 'https://github.com/cvicens/spring-boot-fruit-service'
+      type: git
+      branch: master
+components:
+  - id: redhat/java11/latest
+    type: chePlugin
+  - mountSources: true
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/user/.m2
+    alias: maven
+    image: 'quay.io/cvicensa/cnw-che-stack:7.3.1-3'
+    env:
+      - value: http://nexus.lab-infra:8081/repository/maven-all-public
+        name: MAVEN_MIRROR_URL
+      - value: /home/user/.m2
+        name: MAVEN_CONFIG
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/user
+        name: MAVEN_OPTS
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom
+        name: JAVA_OPTS
+      - value: >-
+          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
+          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
+          -Xms20m -Djava.security.egd=file:/dev/./urandom
+        name: JAVA_TOOL_OPTIONS
+apiVersion: 1.0.0

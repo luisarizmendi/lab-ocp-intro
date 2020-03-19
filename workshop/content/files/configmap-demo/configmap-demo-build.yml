@@ -1,0 +1,40 @@
+---
+kind: List
+apiVersion: v1
+metadata: {}
+items:
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: configmap-demo
+    labels:
+      app: configmap-demo
+  spec:
+    triggers:
+    - type: GitHub
+      github:
+        secret: secret
+    - type: Generic
+      generic:
+        secret: secret
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange: {}
+    source:
+      type: Git
+      git:
+        uri: https://github.com/tosin2013/configmap-demo.git
+      secrets: []
+    strategy:
+      type: Source
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: nodejs:latest
+    output:
+      to:
+        kind: ImageStreamTag
+        name: configmap-demo:latest
+    resources: {}
+    postCommit: {}

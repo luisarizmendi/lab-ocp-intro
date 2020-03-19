@@ -1,2 +1,0 @@
-NFS_SERVER=1.50.20.3
-NFS_PATH="/export/ocp/dynamic"

@@ -292,6 +292,22 @@ only one *Pod* currently running.  In the next set of exercises, you will learn 
 an application, at which point you will be able to see multiple endpoints
 associated with the *Service*.
 
+One last thing about services. Services are dinamically created while creating deploments, but it might be interesting to create manually services to point to external services (external to the OpenShift Cluster), because doing that we can use those external services in the same way that you use the OpenShift services with your applications running in the Cluster. This is interesting , for example, consider an application that you wish to containerize, which depends on an existing database service that is not readily available inside your OpenShift cluster. You do not need to migrate the database service to OpenShift before containerizing the application. Instead, begin designing your application to interact with OpenShift services, including the database service. Simply create an OpenShift service that references the external database service endpoints.
+
+When you create OpenShift services for the endpoints of external services, your applications are able to discover both internal and external services. Additionally, if the endpoints of an external service change, then you do not need to reconfigure affected applications. Instead, update the endpoints for the corresponding OpenShift service.
+
+If you want to create a OpenShift service pointing to an external service you can create a `externalname` type service, as in this example:
+
+```
+oc create service externalname myservice --external-name myhost.example.com
+```
+
+
+
+
+
+
+
 ## Background: Deployments and Replication Controllers
 
 While *Services* provide routing and load balancing for *Pods*, which may go in and

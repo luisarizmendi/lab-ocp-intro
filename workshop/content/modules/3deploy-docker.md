@@ -4,7 +4,21 @@
 
 The simplest way to deploy an application in OpenShift is to take an existing container image and run it. We are going to use the OpenShift web console to do this, so ensure you have the OpenShift web console open with the *Developer Perspective* active and that you are in the project called `lab-intro-{{ username }}`.
 
+OpenShift 4.x provides a Developer Web Console for anyone trying to deploy and manage applications to the cluster. This GUI is different from Administration Console that is typically used by cluster administrators. Developer Web Console is used by application developers and deployers, applicaton operations, or anyone with application focus.
+
 Switch to the OpenShift [Web Console]({{ console_url }}) and select the **Developer** perspective for the project instead of the **Adminstrator** perspective in the left hand side menu. 
+
+
+Take your time and explore menu options.
+
+* **Topology** shows the applications deployed. Since we haven't deployed anything yet, it just shows different ways to deploy workloads in this project
+
+* **Builds** shows the openshift build configurations. Once a build configuration is created, you can run build, view and edit build configuration, view build logs etc.
+
+* **Pipelines** option takes you to OpenShift pipeline. Here you can view, edit and run tekton pipelines, pipeline resources, tasks, view pipelinerun logs and so on. 
+
+* **Advanced** Section includes a bunch of subsections. **Project Details** shows the status of the project, inventory of all the objects deployed in this project, utilization of cpu, memory etc, resource quotas, events etc. **Project Access** allows you to add members and change their permissions. **Metrics** allows you to query project metrics. **Search** allows you to search all the artifacts in this project. **Events** shows a stream of project events.
+
 
 On the **Topology** view, select **Container Image**. This should present the option of deploying an image by performing a search for the image on an image registry.
 
@@ -161,7 +175,7 @@ If you do still see any resources listed, keep running this command until it sho
 Although label selectors can be used to qualify what resources are to be queried, or deleted, do be aware that it may not always be the ``app`` label that you need to use. When an application is created from a template, the labels applied and their names are dictated by the template. As a result, a template may use a different labelling convention. Always use ``oc describe`` to verify what labels have been applied and use ``oc get all --selector`` to verify what resources are matched before deleting any resources.
 
 
-### Deploying the app using the CLI
+### Deploying using the CLI
 
 You now have a clean project again, so lets deploy the same existing container image, but this time using the ``oc`` command line program.
 
@@ -237,3 +251,42 @@ Alternatively, to view the hostname assigned to the route created from the comma
 oc get route/blog-django-py
 ```
 
+
+
+### Last words about ImageStreams
+
+Image streams are one of the main differentiators between OpenShift and upstream Kubernetes. Kubernetes resources reference container images directly, but OpenShift resources, such as deployment configurations and build configurations, reference image streams. OpenShift also extends Kubernetes resources, such as StatefulSet and CronJob resources, with annotations that make them work with OpenShift image streams. Image streams allow OpenShift to ensure reproducible, stable deployments of containerized applications and also rollbacks of deployments to their latest known-good state. Image streams provide a stable, short name to reference a container image that is independent of any registry server and container runtime configuration.
+
+When creating the new application in OpenShift you can see how a new ImageStream has been created:
+
+```execute
+oc get is
+```
+
+Output example:
+
+```
+$ oc get is
+NAME             IMAGE REPOSITORY                                                                   TAGS     UPDATED
+blog-django-py   image-registry.openshift-image-registry.svc:5000/lab-intro-user17/blog-django-py   latest   9 seconds ago
+```
+
+You can see how a "copy" of the image has been created in the internal registry `image-registry.openshift-image-registry.svc:5000`. When the image stream is created, you can just run `oc new-app <name of the imagestream>` to deploy it (it always uses this image in the internal registry)
+
+There are other methods to import images, for example using the `oc import-image` command you don't need to deploy the image with `oc new-app`:
+
+```execute
+oc import-image hello-world --confirm --from quay.io/redhattraining/hello-world-nginx 
+```
+
+Check again the ImageStreams:
+
+```execute
+oc get is
+```
+
+You can try to use this imported ImageStream
+
+```execute
+oc new-app hello-world
+```

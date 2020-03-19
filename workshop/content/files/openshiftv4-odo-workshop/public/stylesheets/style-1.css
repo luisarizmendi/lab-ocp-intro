@@ -1,0 +1,63 @@
+body {
+  font: 18px "Helvetica";
+  margin: 20px;
+  text-align: center;
+
+}
+
+.form-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  border-width: 4px;
+  border-color: black;
+  border-style: solid;
+  padding: 5px;
+  background-color: #fde9e4;
+}
+
+.form-row {
+  height: 110px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-row img {
+  float:left;
+  padding-left: 30%;
+}
+
+.form-row img.hotdog {
+  margin-top: 5px;
+}
+
+.form-row img.hamburger {
+  margin-top: -10px;
+}
+
+.form-row img.salad {
+  margin-top: -5px;
+}
+
+.form-row img.pizza {
+  margin-top: 10px;
+}
+
+.form-row img.soda {
+  margin-top: -5px;
+}
+
+.form-row input {
+  margin-right: 30%;
+  width: 30px;
+  height: 40px;
+  margin-top: 20px;
+  line-height: 40px;
+  font-size: 30px;
+  padding-left: 5px;
+}
+
+input.submit {
+  padding: 5px;
+  font-size: 30px;
+}

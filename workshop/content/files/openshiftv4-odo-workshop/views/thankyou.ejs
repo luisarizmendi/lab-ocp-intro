@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Concession Kiosk - Thank You!</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Concession Kiosk - Thank You</h1>
+    <div>
+      <p>
+        Your order number is: <% if (ticketNumber) { %>
+        <%= ticketNumber %> 
+        <% } %>
+    </p>
+    </div>
+    <div>
+      Your order contains: <% if (order) { %>
+      <% if (order.hotdog > 0) { %>
+        <p></p>
+        <img class="hotdog" src="/images/hotdog.jpg" width="100">
+        <%= order.hotdog %>
+      <% } %>
+      <% if (order.hamburger > 0) { %>
+        <p></p>
+        <img class="hamburger" src="/images/hamburger.jpg" width="100">
+        <%= order.hamburger %>
+      <% } %>
+      <% if (order.salad > 0) { %>
+        <p></p>
+        <img class="salad" src="/images/salad.jpg" width="100">
+        <%= order.salad %>
+      <% } %>
+      <% if (order.pizza > 0) { %>
+        <p></p>
+        <img class="pizza" src="/images/pizza.jpg" width="100">
+        <%= order.pizza %>
+      <% } %>
+      <% if (order.soda > 0) { %>
+        <p></p>
+        <img class="salad" src="/images/soda.jpg" width="100">
+        <%= order.soda %>
+      <% } %>
+      <% } %>  
+    </div>
+
+  </body>
+</html>

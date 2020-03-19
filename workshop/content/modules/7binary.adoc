@@ -1,0 +1,150 @@
+
+
+In this exercise you will learn to deploy a war file. We will assume that you built your source code outside of OpenShift build process and want to download the WAR file on your workstation.
+
+In the last deployment example you have seen how OpenShift can take your existing code from a git repository, build it (maven build in our example) and deploy the resultant container image as an application using the S2I process. That container image with the created a war file in the previous step is then pushed to a new image into the registry that will be used when deployed.
+
+
+But how about if you want OpenShift to deploy a binary file (war file in this case) that you built outside OpenShift? Java developers are used to creating binary artifacts such as war file using continuous integration process and test the binary on their workstation.
+
+OpenShift SourceToImage (S2I) process includes an assemble script that copies the source code from a git repository, invokes a maven build, places the resultant war file in the deployments folder, builds a new application image and pushes that image into the registry. While OpenShift S2I can take your source code and build it into a container, there is also an approach to use a binary (such as a war file) created on your workstation to be used as input instead of source code. This lab explains how to using a binary as input to create and deploy an application on OpenShift.
+
+
+Before we get started, be sure that you are in the right project in the CLI:
+
+[source,bash,role="execute"]
+----
+oc project lab-intro-{{ username }}
+----
+
+## Create/Get a WAR file 
+
+Let's imagine that we already have built the WAR file, for this example We are going to download it locally to use it in our deployment.
+
+[source,bash,role="execute"]
+----
+cd ~
+mkdir deployingbinary
+cd deployingbinary
+curl -O https://raw.githubusercontent.com/RedHatWorkshops/ps/master/deployments/ROOT.war
+----
+
+## Create the build using the binary
+
+Create a new build using JBoss EWS (tomcat 8) image. The flag `binary=true` indicates that this build will use the binary content instead of the url to the source code (in S2I example we pointed to the source code).
+
+[source,bash,role="execute"]
+----
+oc new-build --image-stream=jboss-webserver31-tomcat8-openshift:1.1 --binary=true --name=myapp
+----
+
+You will see something like this:
+
+----
+$ oc new-build --image-stream=jboss-webserver31-tomcat8-openshift:1.1 --binary=true --name=myapp
+
+--> Found image 4611711 (2 months old) in image stream "openshift/jboss-webserver31-tomcat8-openshift" under tag "1.1" for "jboss-webserver31-tomcat8-openshift:1.1"
+
+    JBoss Web Server 3.1
+    --------------------
+    Platform for building and running web applications on JBoss Web Server 3.1 - Tomcat v8
+
+    Tags: builder, java, tomcat8
+
+    * A source build using binary input will be created
+      * The resulting image will be pushed to image stream "myapp:latest"
+      * A binary build was created, use 'start-build --from-dir' to trigger a new build
+
+--> Creating resources with label build=myapp ...
+    imagestream "myapp" created
+    buildconfig "myapp" created
+--> Success
+----
+
+
+## Execute the build
+
+Start the build by uploading the contents of your `deployments`
+directory. Make sure you are in the parent folder where you created the
+`deployments` folder inside previously. Remember the war file is in the
+`deployments` folder. The jboss-ews builder image knows to copy the
+contents of the `deployments` folder to the `deployments` directory and
+then builds the application image.
+
+
+
+[source,bash,role="execute"]
+----
+oc start-build myapp --from-dir=.
+----
+
+In this case you can also just add the ROOT.war file with this command:
+
+----
+oc start-build myapp --from-file=target/ROOT.war
+----
+
+You can check the build logs by executing:
+
+[source,bash,role="execute"]
+----
+oc logs -f myapp-1-build
+----
+
+## Create the application
+
+Now create the application with the same name as what you gave for the
+build.
+
+Here we are using the name *myapp*, so that the rest of the objects such
+as deployment configuration and service are created with the same name
+and refer to the image-stream created earlier.
+
+[source,bash,role="execute"]
+----
+oc new-app myapp 
+----
+
+The output should look like this:
+
+----
+$ oc new-app myapp 
+
+--> Found image 8f09261 (46 seconds old) in image stream "lab-intro-{{ username }}/myapp" under tag "latest" for "myapp"
+
+    lab-intro-{{ username }}/myapp-1:2459f92c
+    ---------------------------
+    Platform for building and running web applications on JBoss Web Server 3.1 - Tomcat v8
+
+    Tags: builder, java, tomcat8
+
+    * This image will be deployed in deployment config "myapp"
+    * Ports 8080/tcp, 8443/tcp, 8778/tcp will be load balanced by service "myapp"
+      * Other containers can access this service through the hostname "myapp"
+
+--> Creating resources ...
+    deploymentconfig "myapp" created
+    service "myapp" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose svc/myapp'
+    Run 'oc status' to view your app.
+----
+
+Now, expose the service as a route to be able to use it from the
+browser.
+
+[source,bash,role="execute"]
+----
+oc expose svc/myapp
+----
+
+You can use the route to access the application using the URL.
+
+[source,bash,role="execute"]
+----
+oc get routes
+----
+
+Use the route in a web browser to display the page: http://myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+

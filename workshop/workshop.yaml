@@ -11,9 +11,18 @@ modules:
     - modules/4scaling
     - modules/5s2i
     - modules/6transfer-files
-    - modules/7templates
-    - modules/8port-forwarding
-    - modules/9odo
+    - modules/7binary
+    - modules/8ssl
+    - modules/9buildimage
+    - modules/10storage
+    - modules/11templates
+    - modules/12port-forwarding
+    - modules/13hooks
+    - modules/14rollback
+    - modules/15cicd
+    - modules/16advdeploystrategy
+    - modules/17odo
+    - modules/18review
     - workshop-summary
 
 

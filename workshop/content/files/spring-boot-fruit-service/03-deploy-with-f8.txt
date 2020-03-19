@@ -1,0 +1,21 @@
+Go to pom.xml and check the value of openjdk18-openshift.version => 1.4
+
+Deploy with f8
+
+oc new-project fruit-service-java-version
+
+oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database -n fruit-service-java-version
+
+mvn clean fabric8:deploy -DskipTests -Popenshift
+
+oc get route fruit-service ==> use it in the next command in a new terminal window
+
+export ROUTE_URL=http://fruit-service-fruit-service-java-version.apps.rhoscluster.caser.local
+
+while true; do sleep 1; curl ${ROUTE_URL}/api/fruits/version ; echo "" ;done
+
+Go to pom.xml and change the value of openjdk18-openshift.version => 1.5
+
+mvn clean fabric8:deploy -DskipTests -Popenshift
+
+Have a look to the while-true and see the java version change

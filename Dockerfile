@@ -19,12 +19,7 @@ RUN rm -rf /tmp/src/.git* && \
     mv stern /usr/bin/stern && \
     curl -L -o kn https://github.com/knative/client/releases/download/v0.2.0/kn-linux-amd64 && \
     chmod +x kn && \
-    mv kn /usr/bin/kn && \
-    git clone -b release/0.7.x https://github.com/redhat-developer-demos/knative-tutorial /opt/app-root/src/knative-tutorial  && \
-    chown -R 1001 /opt/app-root/src/knative-tutorial
-
-
-
+    mv kn /usr/bin/kn 
 
 ENV TERMINAL_TAB=split
 

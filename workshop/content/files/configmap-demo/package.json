@@ -1,0 +1,16 @@
+{
+  "name": "nodejs-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app/app.js",
+  "scripts": {
+    "start": "node app/app.js"
+  },
+  "author": "",
+  "license": "EPL-2.0",
+  "dependencies": {
+    "express": "^4.13.4",
+    "properties-reader": "^1.0.0"
+  }
+}
+

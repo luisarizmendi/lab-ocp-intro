@@ -19,6 +19,7 @@ More technically, it's a visualization of the Kubernetes namespace based on the 
 Click the blue **Create Project** button.
 
 You should now see a page for creating your first project in the web console. Fill in the _Name_ field as:
+
 ```copy
 lab-intro-{{ username }}
 ```

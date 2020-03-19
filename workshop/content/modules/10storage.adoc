@@ -1,0 +1,452 @@
+Files that live on the container instance are ephemeral, this means that once the pod is destroyed or reinstantiated any changes to the files or data storage on the container is destoryed, but Persistent Storage can also be used as part of a deployment.
+
+## Background: Types of Storage
+
+*PersistentVolume (PV)* is an API object, which represents a piece of existing storage in the cluster that was either statically provisioned by the cluster administrator or dynamically provisioned using a StorageClass object. It is a resource in the cluster just like a node is a cluster resource.
+
+*PersistentVolumeClaim* is an API Object, which represents a request for storage by a developer. It is similar to a Pod in that Pods consume node resources and PVCs consume PV resources. A PVC provides an abstraction layer to underlying storage. An administrator could create a number of static persistent volumes (PVs) that can later be bound to one or more persistent volume claims.
+
+
+.OpenShift Container Platform supports the following `PersistentVolume` plug-ins:
+- AWS Elastic Block Store (EBS)
+- Azure Disk
+- Azure File
+- Cinder
+- Fibre Channel
+- GCE Persistent Disk
+- HostPath
+- iSCSI
+- Local volume
+- NFS
+- Red Hat OpenShift Container Storage
+- VMware vSphere
+
+.Supported access modes for PVs
+[options="header,footer"]
+|=======================
+|Volume Plug-in|ReadWriteOnce   |ReadOnlyMany    |  ReadWriteMany
+|AWS EBS    |[*] | [ ] | [ ]
+|Azure File    |[*] | [ *] | [* ]
+|Azure Disk    |[*] | [ ] | [ ]
+|Cinder   |[*] | [ ] | [ ]
+|Fibre Channel  |[*] | [*] | [ ]
+|GCE Persistent Disk |[*] | [ ] | [ ]
+|HostPath  |[*] | [ ] | [ ]
+|iSCSI   |[*] | [*] | [ ]
+|Local volume  |[*] | [ ] | [ ]
+|NFS   | [*] | [*] | [*]
+| Red Hat OpenShift Container Storage| [*] | [ ] | [*]
+|vSphere    |[*] | [ ] | [ ]
+|=======================
+
+
+
+## About this LAB
+
+As a prerequiste for this LAB, the OpenShift cluster where this workshop is running, must be configured to use any kind of Storage Backend that can provide the Persistent Volumes used to show the PV and PVC concept.
+
+
+Before we get started, be sure that you are in the right project in the CLI:
+
+[source,bash,role="execute"]
+----
+oc project lab-intro-{{ username }}
+----
+
+
+## Create a Persistent Volume Claim
+
+
+You can create a pv definition file like this:
+
+[source,bash,role="execute"]
+----
+cat >myclaim-{{ username }}-pvc.yml<<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+  namespace: lab-intro-{{ username }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+----
+
+
+Now create the persistent volume claim using that object definition file:
+
+[source,bash,role="execute"]
+----
+oc create -f myclaim-{{ username }}-pvc.yml
+----
+
+
+Check the persistent volume claim status:
+
+[source,bash,role="execute"]
+----
+oc get pvc
+----
+
+If a suitable Persistent Volume exists (or can be dinamically created) it will show "Bound":
+
+----
+NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+myclaim   Bound    pvc-a5cd7737-5ee1-4281-825e-5ed09dd49ed1   1Gi        RWO            managed-nfs-storage   2m10s
+----
+
+
+## Add the volume to the application
+
+Let's add this volume to the application that we just deployed. We need to change the deploymentconfig, not the pod, since the pod is ephemeral:
+
+[source,bash,role="execute"]
+----
+oc edit dc time
+----
+
+In the `container` section, include the `volumes` referencing the `persistentVolumeClaim`, and in the container specification include the `volumeMounts` pointing to the mounting path
+
+
+        volumeMounts:
+        - name: mypd
+          mountPath: "/tmp/persistent"
+      volumes:
+      - name: mypd
+        persistentVolumeClaim:
+          claimName: myclaim
+
+In the deployment config it should be something like this:
+
+----
+..
+..
+..
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/lab-intro-{{ username }}/time@sha256:c51fff708ad5b4031da973efb891ccb9977f16ec0f0544421bb3e4
+7766b82f0c
+        imagePullPolicy: Always
+        name: time
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: mypd
+          mountPath: "/tmp/persistent"
+      volumes:
+      - name: mypd
+        persistentVolumeClaim:
+          claimName: myclaim
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+..
+..
+..
+----
+
+
+As soon as you change the deploymentConfig object definition, a new deploy will be created, with a new POD that should have mounted the new volume:
+
+----
+NAME            READY   STATUS      RESTARTS   AGE
+time-1-build    0/1     Completed   0          23m
+time-1-deploy   0/1     Completed   0          22m
+time-2-deploy   0/1     Completed   0          4m13s
+time-2-p4d6w    1/1     Running     0          4m3s
+----
+
+Review the POD definition and look for the `volumes` and `volumeMounts` that we defined in the deploymentConfig:
+
+[source,bash,role="execute"]
+----
+oc get pod $(oc get pod | grep Running | grep time | awk '{print $1}') -o yaml
+----
+
+We can also connect to the pod and check the mount points that uses the /tmp/persistent path that we configured:
+
+[source,bash,role="execute"]
+----
+oc rsh $(oc get pod | grep Running | grep time | awk '{print $1}')
+mount | grep persistent
+exit
+----
+
+In this example you can see an output when NFS is used:
+
+----
+[{{ username }}:~/deployingbinary] $ oc rsh $(oc get pod | grep Running | grep time | awk '{print $1}')
+sh-4.2$ mount | grep persistent
+1.50.20.3:/export/ocp/dynamic/lab-intro-{{ username }}-myclaim-pvc-a5cd7737-5ee1-4281-825e-5ed09dd49ed1 on /tmp/persistent type nfs4 (rw,relatime,vers=4.2,
+rsize=524288,wsize=524288,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=1.50.20.13,local_lock=none,addr=1.50.20.3)
+----
+
+
+If you want to check the events related to the `persistentvolumeclaim`:
+
+[source,bash,role="execute"]
+----
+oc get event | grep volume
+----
+
+
+
+
+## Additional "Storage" resources: Configmaps and Secrets
+
+Typically, developers configure their applications through a combination of environment variables, command-line arguments, and configuration files. When deploying applications to OpenShift, configuration management presents a challenge due to the immutable nature of containers. Unlike traditional, non-containerized deployments, it is not recommended to couple the application with the configuration when running containerized applications.
+
+The recommended approach for containerized applications is to decouple the static application binaries from the dynamic configuration data and to externalize the configuration. This separation ensures the portability of applications across many environments.
+
+OpenShift provides the secret and configuration map resource types to externalize and manage configuration for applications.
+
+Secret resources are used to store sensitive information, such as passwords, keys, and tokens. As a developer, it is important to create secrets to avoid compromising credentials and other sensitive information in your application. There are different secret types which can be used to enforce usernames and keys in the secret object: service-account-token, basic-auth, ssh-auth, tls and opaque. The default type is opaque. The opaque type does not perform any validation, and allows unstructured key:value pairs that can contain arbitrary values.
+
+Configuration map resources are similar to secret resources, but they store nonsensitive data. A configuration map resource can be used to store fine-grained information, such as individual properties, or coarse-grained information, such as entire configuration files and JSON data.
+
+Those configmaps and secrets are mounted in the PODs as additional storage resource, let's review it
+
+
+### An configmap example
+
+Let's start playing with configmaps. A `ConfigMap` provides mechanisms to inject containers with configuration data while keeping containers agnostic of OpenShift Container Platform. A ConfigMap can be used to store fine-grained information like individual properties or coarse-grained information like entire configuration files or JSON blobs. In the lab below we will modify the properties file of a webpage using a `ConfigMap`. The `ConfigMap` object holds key-value pairs of configuration data that can be consumed in pods or used to store configuration data. ConfigMaps is similar to secrets but it is not recommended for sensitive data.
+
+We are going to use a simple application to test configuration map changes:
+
+```execute
+cd ~
+git clone https://github.com/tosin2013/configmap-demo.git
+cd configmap-demo
+```
+
+The application will show a background color depending on the value of the `color` variable and show a custom message included in the `message` variable. We'll configure the first variable `color` configuring it in a file and We'll setup the `message` variable directly using the CLI while creating the application.
+
+
+First, let's create the config file for the `color` variable:
+
+```execute
+export COLOR=red
+echo "color=$COLOR" > ui.properties
+```
+
+Check the key-value added in the file:
+
+```execute
+cat ui.properties
+```
+
+Let’s create a then the actual ConfigMap, named config, with both the file already created (includig the value of `color`) and a literal text that will configure the `message` variable:
+
+```execute
+export PERSONAL_MESSAGE="I love Configmaps"
+oc create configmap config \
+            --from-literal=message="${PERSONAL_MESSAGE}" \
+            --from-file=ui.properties
+```
+
+Check the contents of configmap/config
+
+```execute
+oc get configmap/config -o json
+```
+
+The cloned Git repository includes a build and a deployment definition file that We'll use to deploy the application, you can review them:
+
+The build:
+
+```execute
+cat configmap-demo-build.yml
+```
+
+The deployment. Pay attention to this file since the config map usage is defined on it.
+
+```execute
+cat configmap-demo-deployment.yml
+```
+
+So how the application gets the actual configuration? If you review the deployment definition you will know it.
+
+First, the background color. The application expect it to be configured in a file called `node-app.config` that must be in `/etc/node-app/`, you can see how this is configured in the code snippet showm below. It mounts the key named `ui.properties` of the configmap `config` as a file in the container in `/etc/node-app/node-app.config`. 
+
+```
+          volumeMounts:
+          - name: app-config
+            mountPath: "/etc/node-app/"
+..
+..
+        volumes:
+        - name: app-config
+          configMap:
+            name: config
+            items:
+            - key: ui.properties
+              path: node-app.config
+
+```
+
+The message is configured as the `BACKGROUND_MSG` environment variable (using the key named `message` from the configmap `config`). Environment variables can also be configured from configmaps as you can see in this example.
+
+```
+..
+..
+         - name: BACKGROUND_MSG
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: message
+..
+..
+```
+
+
+Use those files to create the app deploymet and build the app:
+
+```execute
+oc create -f configmap-demo-build.yml
+oc create -f  configmap-demo-deployment.yml
+```
+
+Check the deployment
+
+```execute
+oc get pods
+```
+
+Output example:
+
+```
+$  oc get pods
+NAME                      READY   STATUS      RESTARTS   AGE
+configmap-demo-1-build    0/1     Completed   0          4m29s
+configmap-demo-1-deploy   0/1     Completed   0          3m18s
+configmap-demo-1-kshbh    1/1     Running     0          3m9s
+```
+
+Review the route that has been created (We didn't have to use the `oc expose` command because the route was created as part of the deployment defined in the file reviewed above) 
+
+```execute
+oc get routes
+```
+
+And launch the application:
+
+http://configmap-demo-lab-intro-{{ username }}.{{ cluster_subdomain }}
+
+
+
+
+
+
+We can review the container and the environment variable and file contents to re-check how the configuration was injected correctly:
+
+```execute
+oc exec $(oc get pod | grep Running | grep configmap | awk '{print $1}') mount | grep node-app
+```
+
+```execute
+oc exec $(oc get pod | grep Running | grep configmap | awk '{print $1}') ls /etc/node-app/
+```
+
+```execute
+oc exec $(oc get pod | grep Running | grep configmap | awk '{print $1}') cat /etc/node-app/node-app.config
+```
+
+
+```execute
+oc exec $(oc get pod | grep Running | grep configmap | awk '{print $1}') env | grep BACKGROUND_MSG
+```
+
+
+
+
+
+Now let's update configmap to see that this config can be changed easily since it's detached from the image.
+
+```execute
+export COLOR=green
+echo "color=$COLOR" > ui.properties
+```
+
+Delete old config map
+
+```execute
+oc delete  configmap config
+```
+
+Create a new config map
+
+```execute
+export PERSONAL_MESSAGE="Configmaps are amazing"
+oc create configmap config \
+            --from-literal=message="${PERSONAL_MESSAGE}" \
+            --from-file=ui.properties
+```
+
+Delete old config map pod
+
+```execute
+oc delete pod $(oc get pod | grep Running | grep configmap | awk '{print $1}')
+```
+
+Check pod status
+
+```execute
+oc get pods
+```
+
+Reload the webpage and check the changes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Clean the environment
+
+Delete all objects to start the next section with a clean project 
+
+[source,bash,role="execute"]
+----
+oc delete all --all
+----

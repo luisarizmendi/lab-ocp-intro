@@ -1,0 +1,234 @@
+
+OpenShift also allows you to rollback an application quickly without switching to an older version of the source code in SCM. Imagine that you want to revert quickly the change that We did in the last section because you want to double check how it was the UI before the changes or because you have found a BUG and nothing works...and you need to quickly fix it.
+
+
+
+## Background: Deployment Strategies
+
+First some words about the deployment strategies. We have seen how we created a new "version" of an application but we didn't review what happens with the PODs of the old release, are they detroyed before the new version is created? Can they co-exist?. This is also important with the rollbacks sice a rollback is not more than a new version of the application but with the old configuration.
+
+A deployment strategy is a method of changing or upgrading an application. The objective is to make changes or upgrades with minimal downtime, and with reduced impact on end users.
+
+OpenShift provides several deployment strategies. These strategies can be organized into two primary categories. One approach uses the deployment configuration for the application to define the deployment strategy, and the other approach uses certain features from the OpenShift router to route traffic to the application pods.
+
+Strategies that change the deployment configuration impact all routes that use the application. Strategies that use router features affect individual routes.
+
+Strategies that involve changing the deployment configuration are listed below:
+
+*Rolling*
+
+The rolling strategy is the default strategy used if you do not specify a strategy in the deployment configuration for an application.
+
+This strategy progressively replaces instances of the previous version of an application with instances of the new version of the application. This strategy runs readiness probes to determine when new pods are ready before scaling down older pods. If a significant issue occurs, the rolling deployment is aborted. Deployment can also be manually aborted by using the oc rollout cancel command.
+
+Rolling deployments in OpenShift are canary deployments; OpenShift tests a new version (the canary) before replacing all of the old instances. If the readiness probe never succeeds, OpenShift removes the canary instance and automatically rolls back the deployment configuration.
+
+Use a rolling deployment strategy when:
+
+* You want no downtime during an application update.
+
+* Your application supports running an older version and a newer version at the same time.
+
+*Recreate*
+
+In this strategy, OpenShift first stops all the pods that are currently running and only then starts up pods with the new version of the application. This strategy incurs downtime because, for a brief period, no instances of your application are running.
+
+Use a recreate deployment strategy when:
+
+* Your application does not support running an older version and a newer version at the same time.
+
+* Your application uses a persistent volume with RWO (ReadWriteOnce) access mode, which does not allow writes from multiple pods.
+
+*Custom*
+
+If neither the rolling nor the recreate deployment strategies suit your needs, you can use the custom deployment strategy to deploy your applications. There are times when the command to be executed needs more fine tuning for the system (e.g., memory for the Java Virtual Machine), or you need to use a custom image with in-house developed libraries that are not available to the general public. For these types of use cases, use the Custom strategy. You can provide your own custom container image in which you define the deployment behavior. This custom image is defined in the spec.strategy.customParams attribute of the application deployment configuration. You can also customize environment variables and the command to execute for the deployment.
+
+
+## Background: Multiple versions running in parallel 
+
+Additional things to consider when you are planning the deployment strategy for your application include N-1 compatibility and graceful termination:
+
+* N-1 Compatibility
+
+Many deployment strategies require two versions of the application to be running at the same time. When running two versions of an application simultaneously, ensure that data written by the new code can be read and handled (or gracefully ignored) by the old version of the code; this is called N-1 Compatibility.
+
+The data managed by the application can take many forms: data stored on disk, in a database, or in a temporary cache. Most well designed stateless web applications can support rolling deployments, but it is important to test and design your application to handle N-1 compatibility.
+
+* Graceful Termination
+
+OpenShift allows application instances to shut down cleanly before removing them from the router's load-balancing roster. Applications must ensure they cleanly terminate user connections before they exit.
+
+OpenShift sends a TERM signal to the processes in the container when it wants to shut it down. Application code, on receiving a SIGTERM signal, should stop accepting new connections. Stopping new connections ensures that the router can route traffic to other active instances. The application code should then wait until all open connections are closed (or gracefully terminate individual connections at the next opportunity) before exiting.
+
+After the graceful termination period has expired, OpenShift sends a KILL signal to any process that has not exited. This immediately ends the process. The terminationGracePeriodSeconds attribute of a pod or pod template controls the graceful termination period (the default is 30 seconds), and can be customized per application.
+
+
+
+## Reviewing the current status
+
+Once we know what it's a deployment strategy we can check our application in order to know how it will behave:
+
+[source,bash,role="execute"]
+----
+oc get dc -o yaml
+----
+
+You will see sections like this one, defining a rolling strategy:
+
+----
+..
+..
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+..
+..
+----
+
+Check the pods:
+
+[source,bash,role="execute"]
+----
+oc get pods
+----
+
+Output example:
+
+----
+$ oc get pod
+NAME                                READY   STATUS      RESTARTS   AGE
+kiosk-backend-1-build               0/1     Completed   0          3h43m
+kiosk-backend-1-deploy              0/1     Completed   0          3h42m
+kiosk-backend-1-zqr9v               1/1     Running     0          3h42m
+kiosk-frontend-1-build              0/1     Completed   0          3h43m
+kiosk-frontend-1-deploy             0/1     Completed   0          3h41m
+kiosk-frontend-2-8bktw              1/1     Running     0          48s
+kiosk-frontend-2-build              0/1     Completed   0          114s
+kiosk-frontend-2-deploy             0/1     Completed   0          58s
+mongodb-1-9kc77                     1/1     Running     0          3h43m
+mongodb-1-deploy                    0/1     Completed   0          3h43m
+----
+
+We changed the frontend component so We'll rollback that one as well, you can check the deploymentconfig to check how many "versions" We have deployed:
+
+[source,bash,role="execute"]
+----
+oc get dc
+----
+
+Output example:
+
+----
+$ oc get dc
+NAME             REVISION   DESIRED   CURRENT   TRIGGERED BY
+kiosk-backend    1          1         1         config,image(kiosk-backend:latest)
+kiosk-frontend   2          1         1         config,image(kiosk-frontend:latest)
+mongodb          1          1         1         config,image(mongodb:3.6)
+----
+
+Pay attention to the "REVISION" column, there you can see that We are running the revision 2 of the frontend component.
+
+In this application the "soda" component is the first in the list of the "Concession Kiosk - Menu" (In the revision 1, the first object was the Hotdog)
+
+http://kiosk-frontend-lab-intro-{{ username }}.{{ cluster_subdomain }}
+
+
+image::../images/uifixed.png[]
+
+
+## Rollback the application
+
+Performing a rollback is as easy as running a command on the deploymentconfig object:
+
+[source,bash,role="execute"]
+----
+oc rollback kiosk-frontend --to-version=1
+----
+
+The output should show a Warning:
+
+----
+$ oc rollback kiosk-frontend --to-version=1
+deploymentconfig.apps.openshift.io/kiosk-frontend deployment #3 rolled back to kiosk-frontend-1
+Warning: the following images triggers were disabled: kiosk-frontend:latest
+  You can re-enable them with: oc set triggers dc/kiosk-frontend --auto
+----
+
+Check again the deploymentconfig:
+
+[source,bash,role="execute"]
+----
+oc get dc
+----
+
+Output example:
+
+----
+$ oc get dc
+NAME             REVISION   DESIRED   CURRENT   TRIGGERED BY
+kiosk-backend    1          1         1         config,image(kiosk-backend:latest)
+kiosk-frontend   3          1         1         config
+mongodb          1          1         1         config,image(mongodb:3.6)
+----
+
+Now revision number is 3!! and a new POD has been created:
+
+
+[source,bash,role="execute"]
+----
+oc get pod
+----
+
+Output example:
+
+----
+$ oc get pod
+NAME                                READY   STATUS      RESTARTS   AGE
+
+kiosk-backend-1-build               0/1     Completed   0          4h20m
+kiosk-backend-1-deploy              0/1     Completed   0          4h19m
+kiosk-backend-1-zqr9v               1/1     Running     0          4h18m
+kiosk-frontend-1-build              0/1     Completed   0          4h19m
+kiosk-frontend-1-deploy             0/1     Completed   0          4h18m
+kiosk-frontend-2-build              0/1     Completed   0          38m
+kiosk-frontend-2-deploy             0/1     Completed   0          37m
+kiosk-frontend-3-deploy             0/1     Completed   0          24s
+kiosk-frontend-3-zhvcb              1/1     Running     0          15s
+----
+
+
+Let's review the order in the app: http://kiosk-frontend-lab-intro-{{ username }}.{{ cluster_subdomain }}
+
+As you can see, the Hotdog is now the first element in the list:
+
+image::../images/multitiered2.png[image,400]
+
+
+## Rollforward
+
+Just like you performed a rollback, you can also perform a roll-forward using the same command. You’ll notice above that when you requested a rollback, it caused a new deployment (#3). In essence, we always move forwards in OpenShift, even if we are going "back".
+
+So, if we want to return to the "new code" version, that is deployment #4.
+
+[source,bash,role="execute"]
+----
+oc rollback kiosk-frontend-4
+----
+
+## Clean the environment
+
+Delete all objects to start the next section with a clean project 
+
+[source,bash,role="execute"]
+----
+oc delete all --all
+----
+
+

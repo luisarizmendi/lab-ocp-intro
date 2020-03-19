@@ -1,0 +1,141 @@
+
+In this exercise you will set up your application to encrypt traffic
+with the OpenShift Wildcard certificate.
+
+
+Before we get started, be sure that you are in the right project in the CLI:
+
+[source,bash,role="execute"]
+----
+oc project lab-intro-{{ username }}
+----
+
+
+## Review what you have deployed
+
+To view the routing config you will need to use the `oc get route`
+command
+
+[source,bash,role="execute"]
+----
+oc get route/myapp -o yaml
+----
+
+Output should be something like this: 
+
+----
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: 2018-04-09T15:40:04Z
+  labels:
+    app: myapp
+  name: myapp
+  namespace: lab-intro-{{ username }}
+  resourceVersion: "127925718"
+  selfLink: /oapi/v1/namespaces/lab-intro-{{ username }}/routes/myapp
+  uid: 45bc5aec-3c0c-11e8-888a-02722ccca8d2
+spec:
+  host: myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: myapp
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-04-09T15:40:04Z
+      status: "True"
+      type: Admitted
+    host: myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+    routerName: router
+    wildcardPolicy: None
+----
+
+Note here that the `host:` is set to the FQDN that your application is
+running on.
+
+Currently the routing component of OpenShift supports ports `80` and
+`443`. When you first create your route, the mapping of `80` to your pod
+is done automatically. There are a few things that need to be done in
+order to get the `443` mapping to work.
+
+## TLS Edge Termination
+
+OpenShift has a _wildcard_ SSL certificate that it can use for any
+application. We can use this SSL certificate to serve SSL from our
+application without having to generate a cert of our own (which is
+sometimes called SSL-offloading).
+
+Edit your routing configuration:
+
+[source,bash,role="execute"]
+----
+oc edit route/myapp
+----
+
+You are going to add `tls: termination: edge` right below the `host:`
+section. It should look something like this.
+
+----
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: 2018-04-09T15:40:04Z
+  labels:
+    app: myapp
+  name: myapp
+  namespace: lab-intro-{{ username }}
+  resourceVersion: "127925718"
+  selfLink: /oapi/v1/namespaces/lab-intro-{{ username }}/routes/myapp
+  uid: 45bc5aec-3c0c-11e8-888a-02722ccca8d2
+spec:
+  host: myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+  tls:
+    termination: edge
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: myapp
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: 2018-04-09T15:40:04Z
+      status: "True"
+      type: Admitted
+    host: myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+    routerName: router
+    wildcardPolicy: None
+----
+
+## Verify the change
+
+The Route for the application should now reflect the SSL connection (i.e. https verses http in the link).
+
+Please click on the new Route and verify the new Route works as expected.
+
+[source,bash,role="execute"]
+----
+oc get routes
+----
+
+Use the route in a web browser to display the page: https://myapp-lab-intro-{{ username }}.{{ cluster_subdomain }}
+
+
+
+Let's clean up the project.
+
+[source,bash,role="execute"]
+----
+oc delete all --all
+----

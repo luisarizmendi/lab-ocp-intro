@@ -12,23 +12,41 @@ modules:
         name: Getting Started
         exit_sign: Start
     modules/1explore-console:
-        name: Explore the Web Console
+        name: Explore - the Web Console
     modules/2explore-cli:
-        name: Explore the CLI
+        name: Explore - the CLI
     modules/3deploy-docker:
-        name: Deploying an image
+        name: Deploying - Using a container image
     modules/4scaling:
-        name: Scaling the application
+        name: Playing with - Application Scaling 
     modules/5s2i:
-        name: Source-to-image deployments   
+        name: Deploying - Using Source-to-image   
     modules/6transfer-files:
-        name: Transfering files  
-    modules/7templates:
-        name: Using Templates  
-    modules/8port-forwarding:
-        name: Port Forwarding   
-    modules/9odo:
-        name: Deploying APPs with ODO   
+        name: Playing with - Transfering files  
+    modules/7binary:
+        name: Deploying - Using binary files
+    modules/8ssl:
+        name: Playing with - SSL routes
+    modules/9buildimage:
+        name: Deploying - Using Dockerfiles
+    modules/10storage:
+        name: Playing with - Storage
+    modules/11templates:
+        name: Deploying - Using Templates  
+    modules/12port-forwarding:
+        name: Playing with - Port Forwarding   
+    modules/13hooks:
+        name: Deploying - Using hooks
+    modules/14rollback:
+        name: Playing with - Rollback
+    modules/15cicd:
+        name: Deploying - Using CI/CD pipelines
+    modules/16advdeploystrategy:
+        name: Playing with - Advanced Deployment Stragies
+    modules/17odo:
+        name: Bonus - Using ODO   
+    modules/18review:
+        name: Review - Configuring a complete CI/CD Pipeline
         exit_sign: Go to Summary
     workshop-summary:
         name: Workshop Summary

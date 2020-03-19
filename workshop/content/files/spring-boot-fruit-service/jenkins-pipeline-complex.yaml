@@ -1,0 +1,206 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: fruit-service-pipeline-complex
+spec:
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        // Don't forget to run the commands to create the dev project, and grant the needed roles to the service accounts
+                
+        def BUILD_NAME = APP_NAME
+            
+        //def mvnCmd = "mvn -s ./nexus_openshift_settings.xml"
+        def mvnCmd = "mvn"
+
+        pipeline {
+          agent {
+            label 'maven'
+          }
+          stages {
+            stage('Checkout') {
+              steps {
+                git url: "${GIT_URL}", branch: "${GIT_REF}"
+              }
+            }
+            
+            stage('Build') {
+                steps {
+                    dir("${CONTEXT_DIR}") {
+                        sh "${mvnCmd} clean package -DskipTests -Popenshift"
+                    }
+                }
+            }
+            
+            stage('Test') {
+                steps {
+                    dir("${CONTEXT_DIR}") {
+                        sh "${mvnCmd} test"
+                    }
+                }
+            }
+            
+            stage('Sonar') {
+                steps {
+                    script {
+                        dir("${CONTEXT_DIR}") {
+                          print "${mvnCmd} sonar:sonar -Dsonar.host.url=${SONAR} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.login=${SONAR_TOKEN}"
+                        }
+                    }
+                }
+            }
+            
+            stage('Nexus') {
+                steps {
+                    script {
+                      dir("${CONTEXT_DIR}") {
+                        print "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${NEXUS}/repository/maven-snapshots/"
+                      }
+                    }
+                }
+            }
+                                
+            stage('Create Image Builder') {
+              when {
+                expression {
+                  openshift.withCluster() {
+                    return !openshift.selector("bc", "${BUILD_NAME}").exists();
+                  }
+                }
+              }
+              steps {
+                script {
+                  openshift.withCluster() {
+                    openshift.newBuild("--name=${BUILD_NAME}", "--image-stream=${BUILD_IMAGE_STREAM}", "--binary")
+                  }
+                }
+              }
+            }
+
+            stage('Build Image') {
+              steps {
+                script {
+                  dir("${CONTEXT_DIR}") {
+                    openshift.withCluster() {
+                        openshift.selector("bc", "${BUILD_NAME}").startBuild("--from-file=./target/${APP_NAME}-${APP_VERSION}.jar", "--wait")
+                    }      
+                  }
+                }
+              }
+            }
+
+            stage('Create DEV') {
+              when {
+                expression {
+                  openshift.withCluster() {
+                      openshift.withProject("${DEV_PROJECT_NAME}") {
+                        return !openshift.selector('dc', "${APP_NAME}").exists()
+                      }
+                  }
+                }
+              }
+              steps {
+                script {
+                  openshift.withCluster() {
+                    openshift.withProject("${DEV_PROJECT_NAME}") {
+                        openshift.newApp("${DEV_PROJECT_NAME}/${BUILD_NAME}:latest", "--name=${APP_NAME} -e DB_USERNAME=luke -e DB_PASSWORD=secret -e JAVA_OPTIONS=-Dspring.profiles.active=openshift").narrow('svc').expose()
+                        def liveness = openshift.raw( "set probe dc/${APP_NAME} --liveness --get-url=http://:8080/actuator/health --initial-delay-seconds=180" )
+                        echo "After set probe liveness: ${liveness.out}"
+                        def readiness = openshift.raw( "set probe dc/${APP_NAME} --readiness --get-url=http://:8080/api/fruits --initial-delay-seconds=10" )
+                        echo "After set probe readiness: ${readiness.out}"
+                        def partOfLabel = openshift.raw( "label dc/${APP_NAME} app.kubernetes.io/part-of=${APP_NAME}-app" )
+                        echo "After label part-of partOfLabel: ${partOfLabel.out}"
+                    }
+                  }
+                }
+              }
+            }
+
+            stage('Approve') {
+                steps {
+                    timeout(time:15, unit:'MINUTES') {
+                        input message:'Approve Deploy to TEST?'
+                    }
+                }
+            }
+
+            stage('Promote to TEST') {
+              steps {
+                script {
+                  openshift.withCluster() {
+                    openshift.tag("${BUILD_NAME}:latest", "${BUILD_NAME}:test")
+                  }
+                }
+              }
+            }
+
+            stage('Create TEST') {
+              when {
+                expression {
+                  openshift.withCluster() {
+                      openshift.withProject("${TEST_PROJECT_NAME}") {
+                        return !openshift.selector('dc', "${APP_NAME}").exists()
+                      }
+                  }
+                }
+              }
+              steps {
+                script {
+                  openshift.withCluster() {
+                    openshift.withProject("${TEST_PROJECT_NAME}") {
+                        openshift.newApp("${DEV_PROJECT_NAME}/${BUILD_NAME}:test", "--name=${APP_NAME} -e DB_USERNAME=luke -e DB_PASSWORD=secret -e JAVA_OPTIONS=-Dspring.profiles.active=openshift").narrow('svc').expose()
+                        def liveness = openshift.raw( "set probe dc/${APP_NAME} --liveness --get-url=http://:8080/actuator/health --initial-delay-seconds=180" )
+                        echo "After set probe liveness: ${liveness.out}"
+                        def readiness = openshift.raw( "set probe dc/${APP_NAME} --readiness --get-url=http://:8080/api/fruits --initial-delay-seconds=10" )
+                        echo "After set probe readiness: ${readiness.out}"
+                        def partOfLabel = openshift.raw( "label dc/${APP_NAME} app.kubernetes.io/part-of=${APP_NAME}-app" )
+                        echo "After label part-of partOfLabel: ${partOfLabel.out}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      env:
+        - name: MAVEN_OPTS
+          value: >-
+            -Dsun.zip.disableMemoryMapping=true -Xms20m
+            -Djava.security.egd=file:/dev/./urandom
+            -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
+            -Dsun.zip.disableMemoryMapping=true'
+        - name: APP_BASE
+          value: "apps.cluster-kharon-d762.kharon-d762.example.opentlc.com"
+        - name: LAB_INFRA_PROJECT_NAME
+          value: "lab-infra"
+        - name: APP_NAME
+          value: "fruit-service"
+        - name: APP_VERSION
+          value: "1.0.0"
+        - name: DEV_PROJECT_NAME
+          value: "fruit-service-dev"
+        - name: TEST_PROJECT_NAME
+          value: "fruit-service-test"
+        - name: GIT_URL
+          value: "https://github.com/cvicens/spring-boot-fruit-service.git"
+        - name: GIT_REF
+          value: "master"
+        - name: CONTEXT_DIR
+          value: "."
+        - name: BUILD_IMAGE_STREAM
+          value: "openshift/redhat-openjdk18-openshift:1.4"
+        - name: NEXUS
+          value: "http://nexus-lab-infra.apps.cluster-kharon-d762.kharon-d762.example.opentlc.com"
+        - name: NEXUS_USERNAME
+          value: "admin"
+        - name: NEXUS_PASSWORD
+          value: "admin123"
+        - name: NEXUS_PATH
+          value: "dev/snowdrop/example"
+        - name: SONAR_TOKEN
+          value: "801f1b738c233e8e1589b57f86336904f0a97c4b"
+        - name: SONAR
+          value: "http://sonarqube-lab-infra.apps.cluster-kharon-d762.kharon-d762.example.opentlc.com"
+        - name: JOB_BASE_NAME
+          value: "fruit-service-job"
+    type: JenkinsPipeline

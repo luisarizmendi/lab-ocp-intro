@@ -1,0 +1,37 @@
+export DEV_PROJECT=fruit-service-dev
+export TEST_PROJECT=fruit-service-test
+
+oc delete project ${DEV_PROJECT}
+oc delete project ${TEST_PROJECT}
+
+oc new-project ${DEV_PROJECT}
+oc new-project ${TEST_PROJECT}
+
+#oc new-app jenkins-ephemeral -p MEMORY_LIMIT=3Gi -p JENKINS_IMAGE_STREAM_TAG=jenkins:4.2.5 -n ${DEV_PROJECT}
+oc new-app jenkins-ephemeral -p MEMORY_LIMIT=3Gi -p JENKINS_IMAGE_STREAM_TAG=jenkins:2 -n ${DEV_PROJECT}
+
+oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database -n ${DEV_PROJECT}
+oc label dc/my-database app.kubernetes.io/part-of=fruit-service-app -n ${DEV_PROJECT}
+
+oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database -n ${TEST_PROJECT}
+oc label dc/my-database app.kubernetes.io/part-of=fruit-service-app -n ${TEST_PROJECT}
+
+oc policy add-role-to-user edit system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user view system:serviceaccount:${DEV_PROJECT}:jenkins -n ${TEST_PROJECT}
+oc policy add-role-to-user system:image-puller system:serviceaccount:${TEST_PROJECT}:default -n ${DEV_PROJECT}
+
+oc apply -n ${DEV_PROJECT} -f jenkins-pipeline-complex.yaml
+
+oc start-build bc/fruit-service-pipeline-complex -n ${DEV_PROJECT}
+
+==> Cambiar pom.xml -> JDK version
+
+git commit -a -m "jdk 8:1.5"
+git push origin master
+
+oc start-build bc/fruit-service-pipeline-complex -n ${DEV_PROJECT}
+
+==> Probar jdk version en DEV antes de aprobar!
+
+==> Aprobar y probar jdk version en TEST
+
