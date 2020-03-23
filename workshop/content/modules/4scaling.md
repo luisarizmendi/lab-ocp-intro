@@ -114,7 +114,7 @@ spec:
   enableServiceLinks: true
   imagePullSecrets:
   - name: default-dockercfg-bswxv
-  nodeName: worker0.ocp.136.243.40.222.xip.io
+  nodeName: worker0.ocp.136.243.40.222.nip.io
   priority: 0
   restartPolicy: Always
   schedulerName: default-scheduler

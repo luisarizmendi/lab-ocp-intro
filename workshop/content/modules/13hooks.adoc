@@ -379,7 +379,7 @@ As you can see, the URL includes the secret that we reviewed before, but *in thi
 This right URL should be look like in this example:
 
 ----
-https://api.ocp.136.243.40.222.xip.io:6443/apis/build.openshift.io/v1/namespaces/lab-intro-user18/buildconfigs/kiosk-frontend/webhooks/ZFhff0POJxJRPS-klb2F/github
+https://api.ocp.136.243.40.222.nip.io:6443/apis/build.openshift.io/v1/namespaces/lab-intro-user18/buildconfigs/kiosk-frontend/webhooks/ZFhff0POJxJRPS-klb2F/github
 ----
 
 

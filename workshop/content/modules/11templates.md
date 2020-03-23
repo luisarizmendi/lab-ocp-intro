@@ -285,7 +285,7 @@ You will see output similar to:
     persistentvolumeclaim "my-wordpress-site-wordpress-data" created
 --> Success
     Build scheduled, use 'oc logs -f bc/my-wordpress-site' to track its progress.
-    Access your application via route 'my-wordpress-site-testing.apps.ocp.136.243.40.222.xip.io'
+    Access your application via route 'my-wordpress-site-testing.apps.ocp.136.243.40.222.nip.io'
     Run 'oc status' to view your app.
 ```
 

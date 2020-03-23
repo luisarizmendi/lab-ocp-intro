@@ -8,9 +8,6 @@ modules:
     setup-environment:
         name: Setup Environment
         exit_sign: Start Workshop
-    modules/intro:
-        name: Getting Started
-        exit_sign: Start
     modules/1explore-console:
         name: Explore - the Web Console
     modules/2explore-cli:
@@ -18,11 +15,11 @@ modules:
     modules/3deploy-docker:
         name: Deploying - Using a container image
     modules/4scaling:
-        name: Playing with - Application Scaling 
+        name: Playing with - Application Scaling
     modules/5s2i:
-        name: Deploying - Using Source-to-image   
+        name: Deploying - Using Source-to-image
     modules/6transfer-files:
-        name: Playing with - Transfering files  
+        name: Playing with - Transfering files
     modules/7binary:
         name: Deploying - Using binary files
     modules/8ssl:
@@ -32,9 +29,9 @@ modules:
     modules/10storage:
         name: Playing with - Storage
     modules/11templates:
-        name: Deploying - Using Templates  
+        name: Deploying - Using Templates
     modules/12port-forwarding:
-        name: Playing with - Port Forwarding   
+        name: Playing with - Port Forwarding
     modules/13hooks:
         name: Deploying - Using hooks
     modules/14rollback:
@@ -44,7 +41,7 @@ modules:
     modules/16advdeploystrategy:
         name: Playing with - Advanced Deployment Stragies
     modules/17odo:
-        name: Bonus - Using ODO   
+        name: Bonus - Using ODO
     modules/18review:
         name: Review - Configuring a complete CI/CD Pipeline
         exit_sign: Go to Summary
