@@ -80,6 +80,7 @@ We will deploy all components using a template. Let's review what objects will b
 [source,bash,role="execute-2"]
 ----
 <ctrl-c>
+cd ~/openshift-cd-demo
 less cicd-template.yaml
 ----
 
