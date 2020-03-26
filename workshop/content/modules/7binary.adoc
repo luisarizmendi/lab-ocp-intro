@@ -163,7 +163,7 @@ Clone this repository:
 [source,bash,role="execute"]
 ----
 cd ~
-https://github.com/cvicens/spring-boot-fruit-service
+git clone https://github.com/cvicens/spring-boot-fruit-service
 cd spring-boot-fruit-service
 ----
 
@@ -176,14 +176,14 @@ ls src/main/fabric8
 
 [source,bash,role="execute"]
 ----
-cat src/main/fabric8/deployment.yaml
+cat src/main/fabric8/deployment.yml
 ----
 
 Now let's deploy it. First we need to deploy a database service that this application requieres:
 
 [source,bash,role="execute"]
 ----
-oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database -n fruit-service-java-version
+oc new-app -e POSTGRESQL_USER=luke -ePOSTGRESQL_PASSWORD=secret -ePOSTGRESQL_DATABASE=my_data centos/postgresql-10-centos7 --name=my-database 
 ----
 
 Once the database is running, build locally and deploy the application with maven and the fabric8 plugin:
