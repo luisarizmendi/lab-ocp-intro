@@ -9,41 +9,41 @@ modules:
         name: Setup Environment
         exit_sign: Start Workshop
     modules/1explore-console:
-        name: Explore - the Web Console
+        name: 1.Explore - Web Console
     modules/2explore-cli:
-        name: Explore - the CLI
+        name: 2.Explore - CLI
     modules/3deploy-docker:
-        name: Deploying - Using a container image
+        name: 3.Deploying - Using a container image
     modules/4scaling:
-        name: Playing with - Application Scaling
+        name: 4.Playing with - Application Scaling
     modules/5s2i:
-        name: Deploying - Using Source-to-image
+        name: 5.Deploying - Using Source-to-image
     modules/6transfer-files:
-        name: Playing with - Transfering files
+        name: 6.Playing with - Transfering files
     modules/7binary:
-        name: Deploying - Using binary files
+        name: 7.Deploying - Using binary files
     modules/8ssl:
-        name: Playing with - SSL routes
+        name: 8.Playing with - SSL routes
     modules/9buildimage:
-        name: Deploying - Using Dockerfiles
+        name: 9.Deploying - Using Dockerfiles
     modules/10storage:
-        name: Playing with - Storage
+        name: 10.Playing with - Storage
     modules/11templates:
-        name: Deploying - Using Templates
+        name: 11.Deploying - Using Templates
     modules/12port-forwarding:
-        name: Playing with - Port Forwarding
+        name: 12.Playing with - Port Forwarding
     modules/13hooks:
-        name: Deploying - Using hooks
+        name: 13.Deploying - Using hooks
     modules/14rollback:
-        name: Playing with - Rollback
+        name: 14.Playing with - Rollback
     modules/15cicd:
-        name: Deploying - Using CI/CD pipelines
+        name: 15.Deploying - Using CI/CD pipelines
     modules/16advdeploystrategy:
-        name: Playing with - Advanced Deployment Stragies
+        name: 16.Playing with - Advanced Deployment Stragies
     modules/17odo:
-        name: Bonus - Using ODO
+        name: 17.Bonus - Using ODO
     modules/18review:
-        name: Review - Configuring a complete CI/CD Pipeline
+        name: 18.Review - Configuring a complete CI/CD Pipeline
         exit_sign: Go to Summary
     workshop-summary:
         name: Workshop Summary
