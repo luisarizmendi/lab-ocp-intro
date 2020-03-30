@@ -8,8 +8,7 @@ RUN rm -rf /tmp/src/.git* && \
     chown -R 1001 /tmp/src && \
     chgrp -R 0 /tmp/src && \
     chmod -R g+w /tmp/src && \
-    yum install -y mariadb  && \
-    yum install -y python2-httpie procps-ng  && \
+    yum install -y mariadb source-to-image tree python2-httpie procps-ng  && \
     pip install yq && \
     curl -L -o hey https://storage.googleapis.com/hey-release/hey_linux_amd64 && \
     chmod +x hey && \
