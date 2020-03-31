@@ -1,7 +1,4 @@
 
-
-## Deploying a container image using the Web Console
-
 The simplest way to deploy an application in OpenShift is to take an existing container image and run it. We are going to use the OpenShift web console to do this, so ensure you have the OpenShift web console open with the *Developer Perspective* active and that you are in the project called `lab-intro-{{ username }}`.
 
 OpenShift 4.x provides a Developer Web Console for anyone trying to deploy and manage applications to the cluster. This GUI is different from Administration Console that is typically used by cluster administrators. Developer Web Console is used by application developers and deployers, applicaton operations, or anyone with application focus.
