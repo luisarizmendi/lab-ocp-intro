@@ -97,25 +97,30 @@ then
     fi
 
 else
+
+  if [ $MULTIUSER = true ]; then
   echo "*********************************************************************************"
   echo "*                                   NOTE                                        *"
   echo "*********************************************************************************"
   echo ""
   echo "This Workshop require at least one user with admin role."
-  echo "If multiuser mode is selected (default) a dynamic PV that is used by the spawner"
+  echo "If multiuser mode is selected (default) a dynamic PV will be used by the spawner"
   echo "of the workshop environments. You can deploy automatically the pre-requirements "
   echo "using --prerequisites, it creates local user accounts and deploy the (unsupported)"
   echo "dynamic NFS autoprovisioner (that must be configured pointing to the NFS server IP"
   echo "before running the script)"
   echo ""
   echo "If no dynamic PV is possible in this environment, use the --singleuser option but"
-  echo "be aware that in that case the Web Console will use a Service Account instead of"
-  echo "the user account, and that could affect some of the steps described in the Workshop"
+  echo "be aware that in that case you will be using a Service Account instead of the users"
+  echo "account, and that could affect some of the steps described in the Workshop"
   echo ""
   echo "*********************************************************************************"
   echo ""
   echo ""
   read -p "                        PRESS ENTER TO CONTINUE"
+  fi
+
+
 fi
 
 if [ $MULTIUSER = true ]; then
