@@ -36,12 +36,6 @@ do
 done
 
 
-if [ $MULTIUSER = true ]; then
-  if [ $IS_CLUSTER_ADMIN = no ]; then
-      echo ""; echo "YOU NEED TO LOG AS CLUSTER ADMIN!"; echo ""; exit -1
-  fi
-fi
-
 
 if [ $CLEANUP = true ]
 then
@@ -73,6 +67,13 @@ fi
 
 if [ $RUN_PREREQUISITES = true ]
 then
+
+
+    if [ $IS_CLUSTER_ADMIN = no ]; then
+        echo ""; echo "YOU NEED TO LOG AS CLUSTER ADMIN!"; echo ""; exit -1
+    fi
+
+
     echo "Running pre-requisites"
     echo "**********************"
     echo ""
@@ -122,6 +123,11 @@ else
   read -p "                        PRESS ENTER TO CONTINUE"
 fi
 
+if [ $MULTIUSER = true ]; then
+  if [ $IS_CLUSTER_ADMIN = no ]; then
+      echo ""; echo "YOU NEED TO LOG AS CLUSTER ADMIN!"; echo ""; exit -1
+  fi
+fi
 
 
 echo "Building and deploying workshop"
