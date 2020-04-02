@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 
 In these exercises, we're going to deploy a complete backend application, consisting of
 a REST API backend and a Mongo database. The complete application will already
@@ -216,7 +220,7 @@ PHP_VERSION                     The version of the PHP builder.                 
 The output identifies several parameters that are generated with a regular expression-like generator when the template is processed.
 
 
-Are you ready for the magic command? you can run it in two ways: 
+Are you ready for the magic command? you can run it in two ways:
 
 The first way is processing to get the actual yaml files and use them with the `oc create` command. Something like:
 
@@ -344,5 +348,3 @@ You can then look at the raw definition of the template by running:
 ```execute
 oc get template wordpress-classic-standaloney -o yaml
 ```
-
-

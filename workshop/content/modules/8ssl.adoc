@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 In this exercise you will set up your application to encrypt traffic
 with the OpenShift Wildcard certificate.
 
@@ -21,7 +25,7 @@ command
 oc get route/myapp -o yaml
 ----
 
-Output should be something like this: 
+Output should be something like this:
 
 ----
 apiVersion: v1

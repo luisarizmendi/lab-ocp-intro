@@ -1,3 +1,8 @@
+
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 OpenShift can be integrated with any CI/CD tool but it already have in place a good integration with Jenkins, and that is the tool that We will be using in this lab. Please, be aware that OpenShift is also introducing a feature called `Pipelines` that is based in `Tekton` that provides a framework to create cloud-native CI/CD pipelines quickly, so it might be interesting for you to link:https://www.openshift.com/learn/topics/pipelines[start taking a look to it].
 
 

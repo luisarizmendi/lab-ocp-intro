@@ -1,4 +1,10 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
+
+
 **Congratulations! You just learned the basics of using OpenShift Container Platform.**
 
 Here are some of the ways you can get your own OpenShift cluster:

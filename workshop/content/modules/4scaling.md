@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 
 In these exercises you will learn to scale up an application, by increasing the number of *Pods* running which contain your application. You will also see what happens when you kill an instance of your application.
 
@@ -575,7 +579,7 @@ A related concept is application idling. OpenShift allows you to conserve resour
 Run the following command to find the available endpoints
 
 ```execute
-oc get endpoints 
+oc get endpoints
 ```                                                                                                      
 Output:
 
@@ -617,7 +621,7 @@ So, as soon as the user accesses the application, it comes up!!!
 
 **NOTE:** This exercise, depending on the platform, could freeze the Workshop environment due the load generated. If that happens, try to click on the bars in the up-right corner and select *Reload Terminal*. If that does not work just reload the whole page.
 
-Horizontal Pod AutoScaler (HPA) allows you to automatically scale your application based on the workload. It updates `replicacount` by watching the workload. 
+Horizontal Pod AutoScaler (HPA) allows you to automatically scale your application based on the workload. It updates `replicacount` by watching the workload.
 
 HPA requires your pods to have requests and limits set so that it knows when to scale the application based on the consumption of resources.
 
@@ -662,7 +666,7 @@ oc run --generator=run-pod/v1 -it --rm load-generator --image=busybox /bin/sh
 
 If you don't see a command prompt after waiting 1 minute, try pressing enter.
 
-This spins up a `busybox` image from where we will generate the load. 
+This spins up a `busybox` image from where we will generate the load.
 
 and use that in the following command inside the load generator at the prompt
 
@@ -718,7 +722,7 @@ blog-django-py   Deployment/blog-django-py   0%/50%          1         10       
 ```
 
 
-Stop the load: 
+Stop the load:
 
 ```execute-2
 <ctrl-c>
@@ -728,4 +732,3 @@ Stop the load:
 ```execute
 <ctrl-c>
 ```
-

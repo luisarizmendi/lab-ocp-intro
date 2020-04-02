@@ -1,3 +1,8 @@
+
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 In the previous section we have seen how we can "inject" an already built binary into a build, but if you think about it, we didn't say anything about customizing the image where that binary/code is pushed. OpenShift can take a Dockerfile as an input and generates your application docker image for you. Let's try it.
 
 Before we get started, be sure that you are in the right project in the CLI:

@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 
 We have seen how we can change the code and then the content on the POD will be changed when using S2I, but What if I want to run a quick test before making changes to the code?, for example uploading a File to the POD, or What if I can check the file created by the Source Code? (Downloading a File), let's review how we can do that.
 

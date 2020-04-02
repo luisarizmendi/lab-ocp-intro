@@ -1,9 +1,13 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 The simplest way to deploy an application in OpenShift is to take an existing container image and run it. We are going to use the OpenShift web console to do this, so ensure you have the OpenShift web console open with the *Developer Perspective* active and that you are in the project called `lab-intro-{{ username }}`.
 
 OpenShift 4.x provides a Developer Web Console for anyone trying to deploy and manage applications to the cluster. This GUI is different from Administration Console that is typically used by cluster administrators. Developer Web Console is used by application developers and deployers, applicaton operations, or anyone with application focus.
 
-Switch to the OpenShift [Web Console]({{ console_url }}) and select the **Developer** perspective for the project instead of the **Adminstrator** perspective in the left hand side menu. 
+Switch to the OpenShift [Web Console]({{ console_url }}) and select the **Developer** perspective for the project instead of the **Adminstrator** perspective in the left hand side menu.
 
 
 Take your time and explore menu options.
@@ -12,7 +16,7 @@ Take your time and explore menu options.
 
 * **Builds** shows the openshift build configurations. Once a build configuration is created, you can run build, view and edit build configuration, view build logs etc.
 
-* **Pipelines** option takes you to OpenShift pipeline. Here you can view, edit and run tekton pipelines, pipeline resources, tasks, view pipelinerun logs and so on. 
+* **Pipelines** option takes you to OpenShift pipeline. Here you can view, edit and run tekton pipelines, pipeline resources, tasks, view pipelinerun logs and so on.
 
 * **Advanced** Section includes a bunch of subsections. **Project Details** shows the status of the project, inventory of all the objects deployed in this project, utilization of cpu, memory etc, resource quotas, events etc. **Project Access** allows you to add members and change their permissions. **Metrics** allows you to query project metrics. **Search** allows you to search all the artifacts in this project. **Events** shows a stream of project events.
 
@@ -273,7 +277,7 @@ You can see how a "copy" of the image has been created in the internal registry 
 There are other methods to import images, for example using the `oc import-image` command you don't need to deploy the image with `oc new-app`:
 
 ```execute
-oc import-image hello-world --confirm --from quay.io/redhattraining/hello-world-nginx 
+oc import-image hello-world --confirm --from quay.io/redhattraining/hello-world-nginx
 ```
 
 Check again the ImageStreams:

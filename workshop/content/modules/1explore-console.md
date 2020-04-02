@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 This section focuses on using the web console.
 
 ## Exercise: Logging in with the Web Console

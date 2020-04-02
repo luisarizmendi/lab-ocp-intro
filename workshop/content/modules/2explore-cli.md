@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 The OpenShift CLI is accessed using the command _oc_. From here, you can administrate the entire OpenShift cluster and deploy new applications.
 
 The CLI exposes the underlying Kubernetes orchestration system with the enhancements made by OpenShift. Users familiar with Kubernetes will be able to adapt to OpenShift quickly. _oc_ provides all of the functionality of _kubectl_, along with additional functionality to make it easier to work with OpenShift. The CLI is ideal in situations where you are:
@@ -102,5 +106,3 @@ view                    /view                                                   
 ```
 
 Now that the default Service Account has view access, it can query the REST API to see what resources are within the project. This also has the added benefit of suppressing the error message! Although, in reality, we fixed the application.
-
-

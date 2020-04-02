@@ -1,4 +1,9 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
+
 ## What's ODO
 
 OpenShift Do (`odo`) is a fast, iterative, and straightforward CLI tool for developers who write, build, and deploy applications on OpenShift.
@@ -10,7 +15,7 @@ Existing tools such as `oc` are more operations-focused and require a deep-under
 * Simple syntax and design centered around concepts familiar to developers, such as projects, applications, and components.
 * Completely client based. No server is required within the OpenShift cluster for deployment.
 * Official support for Node.js and Java components.
-* Partial compatibility with languages and frameworks such as Ruby, Perl, PHP, and Python. 
+* Partial compatibility with languages and frameworks such as Ruby, Perl, PHP, and Python.
 * Detects changes to local code and deploys it to the cluster automatically, giving instant feedback to validate changes in real time.
 * Lists all the available components and services from the {product-title} cluster.
 
@@ -27,7 +32,7 @@ The application deployed in this tutorial consists of two such components.
 
 **Backend**
 
-The backend is a Java Spring Boot application. It performs queries against the Kubernetes and OpenShift REST APIs to retrieve a list of the resource objects that were created when you deployed the application. Then, it returns details about these resource objects to the frontend. 
+The backend is a Java Spring Boot application. It performs queries against the Kubernetes and OpenShift REST APIs to retrieve a list of the resource objects that were created when you deployed the application. Then, it returns details about these resource objects to the frontend.
 
 A deployment using a pre-compiled binary will be used
 
@@ -418,7 +423,7 @@ Now, we will tell `odo` to `watch` for changes on the file system in the backgro
 ```execute-2
 <ctrl-c>
 cd ~/Wild-West-Frontend
-odo watch 
+odo watch
 ```
 
 Let's change the displayed name for our wild west game. Currently, the title is "Wild West The OpenShift Way!" We will change this to "My App The OpenShift Way!"
@@ -535,7 +540,7 @@ wildwest-backend   Source   Binary   0
 ```
 
 
-At this moment, remember that with binary deployments we have to first create the build, and then launch that build, so let's do the latter using the local dir: 
+At this moment, remember that with binary deployments we have to first create the build, and then launch that build, so let's do the latter using the local dir:
 
 ```execute
 oc start-build  wildwest-backend --from-dir=.
@@ -872,9 +877,8 @@ http://wild-west-frontend-lab-intro-{{ username }}.{{ cluster_subdomain }}
 
 ## Clean the environment
 
-Delete all objects to start the next section with a clean project 
+Delete all objects to start the next section with a clean project
 
 ```execute
 oc delete all --all
 ```
-

@@ -1,3 +1,8 @@
+
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 Files that live on the container instance are ephemeral, this means that once the pod is destroyed or reinstantiated any changes to the files or data storage on the container is destoryed, but Persistent Storage can also be used as part of a deployment.
 
 ## Background: Types of Storage

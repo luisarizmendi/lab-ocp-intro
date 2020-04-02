@@ -1,4 +1,8 @@
 
+{% if username == blank %}
+  {% assign username = user %}
+{% endif %}
+
 
 Imaging that you need to check what's in the Database of the application that we already deployed, or that you need to inject values on it, in order to do that you can either connect directly to the database using `oc rsh` or you can just forward the database port to your local machine, let's review both ways
 
@@ -7,7 +11,7 @@ Imaging that you need to check what's in the Database of the application that we
 In order to know where the database is running to connect to, run the command:
 
 ```execute
-oc get pods 
+oc get pods
 ```
 
 This will output the details of the pod which is running the database (Guess what, is the one with the "-db").
@@ -129,7 +133,7 @@ In this form, the local port is left off, resulting in a random available port b
 
 When the ``oc port-forward`` command is run and the connection setup, it will stay running until the command is interrupted. You would then use a separate terminal window to run the administration tool which could connect via the forwarded connection. In this case, as we only have the one terminal window, we ran the ``oc port-forward`` command as a background job.
 
-You can see that it is still running using: 
+You can see that it is still running using:
 
 ```execute
 jobs
