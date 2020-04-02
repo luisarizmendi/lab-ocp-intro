@@ -46,7 +46,7 @@ Now, if you want to run the workshop for any user on the cluster (you need clust
 
 `./workshop/launch-workshop.sh`
 
-... or if you just want the environment for you (first create manually a project to run it) :
+... or if you just want the environment for you (a new lab-ocp-intro-<username> project will be created):
 
 `./workshop/launch-workshop.sh --singleuser`
 
