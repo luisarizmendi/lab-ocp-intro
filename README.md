@@ -41,9 +41,14 @@ You need to run this workshop in a working OpenShift Cluster. In order to instal
 
 `cd lab-ocp-intro`
 
+
+Now for running the workshop for multiple users (you need clusteradmin to launch this one):
+
 `./workshop/launch-workshop.sh`
 
+... or if you just want the environment for you
 
+`./workshop/launch-workshop.sh --singleuser`
 
 
 
