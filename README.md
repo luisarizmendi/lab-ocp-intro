@@ -32,7 +32,7 @@ This tutorial will act as step-by-step guide in helping you to understand Opensh
 Deploying the workshop
 =====================
 
-*NOTE*: You have to be log in to the OpenShift cluster from where you launch the installer, probably as clusteradmin if you want to run the workshop as multiuser 
+*NOTE*: You have to be log in to the OpenShift cluster from where you launch the installer, probably as clusteradmin if you want to run the workshop as multiuser
 
 You need to run this workshop in a working OpenShift Cluster. In order to install it, run the following commands:
 
@@ -46,7 +46,7 @@ Now, if you want to run the workshop for any user on the cluster (you need clust
 
 `./workshop/launch-workshop.sh`
 
-... or if you just want the environment for you (a new lab-ocp-intro-<username> project will be created):
+... or if you just want the environment for you (you have to have a project where to install it already created):
 
 `./workshop/launch-workshop.sh --singleuser`
 

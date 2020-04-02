@@ -135,8 +135,8 @@ then
   .workshop/scripts/deploy-spawner.sh
   #echo "multiuser" > typedeployed
 else
-  oc new-project lab-${WORKSHOP_NAME}-$(oc whoami) > /dev/null 2>&1
-  oc project lab-${WORKSHOP_NAME}-$(oc whoami)  > /dev/null 2>&1
+#  oc new-project lab-${WORKSHOP_NAME}-$(oc whoami) > /dev/null 2>&1
+#  oc project lab-${WORKSHOP_NAME}-$(oc whoami)  > /dev/null 2>&1
   #.workshop/scripts/deploy-personal.sh  --settings=develop
   .workshop/scripts/deploy-personal.sh
   #echo "personal" > typedeployed
