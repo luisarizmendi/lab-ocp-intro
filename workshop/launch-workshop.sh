@@ -13,11 +13,6 @@ IS_OC_USER=no
 
 
 IS_CLUSTER_ADMIN=$(oc auth can-i create pods --all-namespaces)
-IS_OC_USER=$(oc auth can-i create pods)
-
-
-if [ $IS_OC_USER = no ]; then echo ""; echo "YOU NEED TO LOG IN OPENSHIFT CLUSTER!"; echo ""; exit -1;fi;
-
 
 while [[ $# -gt 0 ]] && [[ ."$1" = .--* ]] ;
 do
