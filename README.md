@@ -46,7 +46,7 @@ Now, if you want to run the workshop for any user on the cluster (you need clust
 
 `./workshop/launch-workshop.sh`
 
-... or if you just want the environment for you:
+... or if you just want the environment for you (first create manually a project to run it) :
 
 `./workshop/launch-workshop.sh --singleuser`
 
