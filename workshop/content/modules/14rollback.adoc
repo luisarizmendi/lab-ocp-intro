@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 OpenShift also allows you to rollback an application quickly without switching to an older version of the source code in SCM. Imagine that you want to revert quickly the change that We did in the last section because you want to double check how it was the UI before the changes or because you have found a BUG and nothing works...and you need to quickly fix it.
 

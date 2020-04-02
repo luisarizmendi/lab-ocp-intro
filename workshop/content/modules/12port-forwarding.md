@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 
 Imaging that you need to check what's in the Database of the application that we already deployed, or that you need to inject values on it, in order to do that you can either connect directly to the database using `oc rsh` or you can just forward the database port to your local machine, let's review both ways

@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 We have seen how We can automate the build and deploy of an application by using pipelines integration in our buildconfigs. In the previous example We deployed the application in multiple environments but the actual production environment was unique, so if we end up deploying an application that is broken for whatever reason we could affect the service.
 

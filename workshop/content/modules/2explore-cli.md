@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 The OpenShift CLI is accessed using the command _oc_. From here, you can administrate the entire OpenShift cluster and deploy new applications.
 

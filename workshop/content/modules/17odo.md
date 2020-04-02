@@ -1,6 +1,7 @@
 
+
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
 
 

@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 We will use an example from the repo cloned below that puts all together. Understanding this lab is a good review of all concepts that We have been practising in the previous workshop modules and We will also see new ones while deploying the lab.
 

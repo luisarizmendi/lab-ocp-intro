@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 We learned how to deploy an application from it's container image, from the source, from a binary and from a custom container image build but all of those deployments had something in common, a human being (We) trigger the build and deployment of the application. What We will show here is how 
 OpenShift offers several mechanisms to trigger the automatic deployment of applications. In this Lab we will demonstrate the deployment of a very simple application via a GitHub Web Hook trigger.

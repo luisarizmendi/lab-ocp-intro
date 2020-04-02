@@ -1,7 +1,8 @@
 
 {% if username == blank %}
-  {% assign username = user %}
+  {% assign username = "user" %}
 {% endif %}
+
 
 In this exercise you will set up your application to encrypt traffic
 with the OpenShift Wildcard certificate.

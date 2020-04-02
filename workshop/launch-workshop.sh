@@ -168,7 +168,7 @@ if [ $MULTIUSER = true ]
 then
   WORKSHOP_URL=$(oc get routes.route.openshift.io -n lab-${WORKSHOP_NAME} | grep ${WORKSHOP_NAME} | awk '{print $2}')
 else
-  WORKSHOP_URL=$(oc get routes.route.openshift.io -n  lab-${WORKSHOP_NAME}-$(oc whoami) | grep ${WORKSHOP_NAME} | awk '{print $2}')
+  WORKSHOP_URL=$(oc get routes.route.openshift.io | grep ${WORKSHOP_NAME} | awk '{print $2}')
 fi
 
 
